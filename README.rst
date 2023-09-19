@@ -58,79 +58,36 @@ Function Signature
 - ``xml`` (bool, Optional): Create the .aux.xml image statistics. These statistics are not extracted by an external auxiliary file but calculated on the spot. By default, it's True.
 - ``pyramids`` (bool, Optional): Create the .ovr pyramids file with zoom factors (2, 4, 8, 16) and "nearest" resampling method. By default, it's True.
 
+
 1. The function initializes a timer to measure the processing time and extracts the `safe_path` from the given `product_path`.
 
-2. If an `output_path` is provided, it sets the `output_folder_path` to that location. Otherwise, it creates a default 
-"`GTIFF_PRODUCT`" folder in the .SAFE directory for output.
+2. If an `output_path` is provided, it sets the `output_folder_path` to that location. Otherwise, it creates a default "`GTIFF_PRODUCT`" folder in the .SAFE directory for output.
 
-Temporary Folder Creation
-~~~~~~~~~~~~~~~~~~~~~~~~~
+3. A temporary folder called "TEMP" is created within the .SAFE directory.
 
-A temporary folder called "TEMP" is created within the .SAFE directory.
+4. The function locates the granule data within the .SAFE directory. If "L2A" is found in the granule name, it proceeds; otherwise, it raises an error.
 
-Locating Granule Data
-~~~~~~~~~~~~~~~~~~~~~
+5. The function identifies, and processes bands of interest within the 10m, 20m, and 60m resolution categories. It extracts and stacks the relevant bands.
 
-The function locates the granule data within the .SAFE directory. If "L2A" is found in the granule name,
-it proceeds; otherwise, it raises an error.
+6. The bands are sorted according to their codes to ensure consistent ordering.
 
-Band Processing
-~~~~~~~~~~~~~~~
+7. The 10m, 20m, and 60m bands are saved as temporary GeoTIFF files in the TEMP folder.
 
-The function identifies, and processes bands of interest within the 10m, 20m, and 60m resolution categories.
-It extracts and stacks the relevant bands.
+8. The 20m and 60m bands are resampled to match the resolution of the 10m bands based on the selected resampling method.
 
-Sorting Bands
-~~~~~~~~~~~~~
+9. The bands are stacked into a single array, ensuring they align correctly based on their resolutions.
 
-The bands are sorted according to their codes to ensure consistent ordering.
+10. The stacked array is saved as a GeoTIFF file with specified compression settings. If xml is ``True``, .aux.xml files are created for statistics.
 
-Saving Bands to Temporary Files
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+11. If pyramids is ``True``, overviews (pyramids) are built for the GeoTIFF file with specified zoom factors, and resampling method.
 
-The 10m, 20m, and 60m bands are saved as temporary GeoTIFF files in the TEMP folder.
+12. The temporary folder is deleted to free up space.
 
-Resampling
-~~~~~~~~~~
+13. Throughout the process, the function logs its progress, including which bands are being processed and when the processing is completed.
 
-The 20m and 60m bands are resampled to match the resolution of the 10m bands based on the selected resampling method.
+14. The function records the time taken for processing and logs it.
 
-Stacking Bands
-~~~~~~~~~~~~~~
-
-The bands are stacked into a single array, ensuring they align correctly based on their resolutions.
-
-Saving Processed Data
-~~~~~~~~~~~~~~~~~~~~~
-
-The stacked array is saved as a GeoTIFF file with specified compression settings. If xml is ``True``, .aux.xml files are
-created for statistics.
-
-Building Pyramids
-~~~~~~~~~~~~~~~~~
-
-If pyramids is ``True``, overviews (pyramids) are built for the GeoTIFF file with specified zoom factors, and resampling method.
-
-Temporary Folder Cleanup
-~~~~~~~~~~~~~~~~~~~~~~~~
-
-The temporary folder is deleted to free up space.
-
-Logging
-~~~~~~~
-
-Throughout the process, the function logs its progress, including which bands are being processed
-and when the processing is completed.
-
-Completion Time
-~~~~~~~~~~~~~~~
-
-The function records the time taken for processing and logs it.
-
-Function Exit
-~~~~~~~~~~~~~
-
-The function returns ``None`` and completes its execution.
+15. The function returns ``None`` and completes its execution.
 
 How to use
 ==========
